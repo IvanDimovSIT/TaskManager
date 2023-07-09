@@ -5,7 +5,6 @@ import androidx.fragment.app.FragmentManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -53,7 +52,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun setAddButtonListener(){
         findViewById<Button>(R.id.btnAdd).setOnClickListener{
-            Log.d("clicked add button", "clicked add button")
 
             val dialog = AddTaskDialog(object: AddTaskDialog.AddTaskDialogObserver{
                 override fun onTaskAdded(task: Task) {
