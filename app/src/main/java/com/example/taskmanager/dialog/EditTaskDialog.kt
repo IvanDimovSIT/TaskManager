@@ -20,14 +20,11 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-class EditTaskDialog(private val task: Task, private val observer: EditTaskDialogObserver) : DialogFragment() {
+class EditTaskDialog(private val task: Task, private val observer: EditTaskDialogObserver) : BaseTaskDialog() {
     interface EditTaskDialogObserver{
         fun onTaskEdited(task: Task)
     }
 
-    private val LOW_PRIORITY: String = "Нисък Приоритет"
-    private val MEDIUM_PRIORITY: String = "Среден Приоритет"
-    private val HIGH_PRIORITY: String = "Висок Приоритет"
 
     private fun readInput(dialogView: View) : Task?{
         val title: String = dialogView.findViewById<EditText>(R.id.editTaskTitle).text.toString()
@@ -75,38 +72,9 @@ class EditTaskDialog(private val task: Task, private val observer: EditTaskDialo
         val inflater = requireActivity().layoutInflater
         val dialogView = inflater.inflate(R.layout.task_dialog_layout, null)
 
-        val options = ArrayList<String>()
-        options.add(LOW_PRIORITY)
-        options.add(MEDIUM_PRIORITY)
-        options.add(HIGH_PRIORITY)
-
         val spinner: Spinner = dialogView.findViewById(R.id.spnPriority)
-        val adapter = object : ArrayAdapter<String>(
-            requireContext(),
-            android.R.layout.simple_spinner_item,
-            options
-        ) {
-            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-                val view = super.getView(position, convertView, parent)
-                val textView = view.findViewById<TextView>(android.R.id.text1)
-                textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
-                return view
-            }
 
-            override fun getDropDownView(
-                position: Int,
-                convertView: View?,
-                parent: ViewGroup
-            ): View {
-                val view = super.getDropDownView(position, convertView, parent)
-                val textView = view.findViewById<TextView>(android.R.id.text1)
-                textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
-                textView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
-                return view
-            }
-        }
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = adapter
+        spinner.adapter = createArrayAdapter()
         spinner.setSelection(0)
         spinner.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.light_grey))
 
