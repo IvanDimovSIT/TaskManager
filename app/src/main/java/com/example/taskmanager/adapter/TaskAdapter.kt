@@ -58,11 +58,9 @@ class TaskAdapter: RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
             val task: Task = displayedTasks[position]
             val textView:TextView = viewHolder.itemView.findViewById(R.id.txtTaskTitle)
             if(task.isCompleted){
-                textView.paintFlags = textView.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG.inv()
-                textView.setTextColor(ContextCompat.getColor(context, R.color.grey))
-            }else{
-                textView.paintFlags = textView.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                 textView.setTextColor(ContextCompat.getColor(context, R.color.black))
+            }else{
+                textView.setTextColor(ContextCompat.getColor(context, R.color.grey))
             }
             textView.invalidate()
             task.isCompleted = !task.isCompleted
