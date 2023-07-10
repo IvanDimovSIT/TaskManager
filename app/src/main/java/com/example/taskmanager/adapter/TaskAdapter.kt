@@ -88,7 +88,9 @@ class TaskAdapter: RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
 
     override fun onBindViewHolder(holder: TaskAdapter.TaskViewHolder, position: Int) {
         val task = displayedTasks[position]
-        holder.itemView.findViewById<TextView>(R.id.txtTaskTitle).setText(task.title)
+        val titleBox = holder.itemView.findViewById<TextView>(R.id.txtTaskTitle)
+        titleBox.setText(task.title)
+
         holder.itemView.findViewById<TextView>(R.id.txtDate).setText("Срок:"+formatDate(task.dueDate))
 
         val priorityText = holder.itemView.findViewById<TextView>(R.id.txtPriority)

@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.example.taskmanager.R
@@ -32,11 +33,20 @@ class AddTaskDialog(private val observer: AddTaskDialogObserver) :
 
     private fun readInput(dialogView: View) : Task?{
         val title: String = dialogView.findViewById<EditText>(R.id.editTaskTitle).text.toString()
-        val note: String = dialogView.findViewById<EditText>(R.id.editNote).text.toString()
-        val dateString: String = dialogView.findViewById<EditText>(R.id.editDate).text.toString()
+        if(title.isBlank()){
+            showToast(requireContext(), "Въведете заглавие")
+            return null
+        }
 
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val date: Date? = dateFormat.parse(dateString)
+        val note: String = dialogView.findViewById<EditText>(R.id.editNote).text.toString()
+        val dateControl: EditText = dialogView.findViewById<EditText>(R.id.editDate)
+
+        val date: Date? = extractDate(dateControl)
+        if(date == null){
+            showToast(requireContext(), "Въведете валидна дата (година-месец-ден)")
+            return null
+        }
+
         val priorityString: String = dialogView.findViewById<Spinner>(R.id.spnPriority).selectedItem.toString()
         var priority: Priority = Priority.LOW
         when(priorityString){
@@ -45,11 +55,7 @@ class AddTaskDialog(private val observer: AddTaskDialogObserver) :
             LOW_PRIORITY -> priority = Priority.LOW
         }
 
-        return if(title.length < 1 || date == null){
-            null
-        }else{
-            Task(observer.getId(),title, priority, note, date, false)
-        }
+        return Task(observer.getId(),title, priority, note, date, false)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -67,21 +73,24 @@ class AddTaskDialog(private val observer: AddTaskDialogObserver) :
 
         builder.setView(dialogView)
 
-        builder.setPositiveButton("Потвърди") { dialog, _ ->
-            val task: Task? = readInput(dialogView)
-            if(task == null){
-
-            }else{
-                observer.onTaskAdded(task)
-                dialog.dismiss()
-            }
-        }
+        builder.setPositiveButton("Потвърди", null)
 
         builder.setNegativeButton("Отказ") { dialog, _ ->
             dialog.cancel()
         }
 
         val dialog = builder.create()
+        dialog.setOnShowListener { dialogInterface ->
+            val positiveButton = dialog.getButton(Dialog.BUTTON_POSITIVE)
+            positiveButton.setOnClickListener {
+                val task: Task? = readInput(dialogView)
+                if (task != null) {
+                    observer.onTaskAdded(task)
+                    dialog.dismiss()
+                }
+            }
+        }
+
         dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
         return dialog

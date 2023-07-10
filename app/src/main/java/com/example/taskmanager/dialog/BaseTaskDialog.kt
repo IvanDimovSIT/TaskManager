@@ -1,12 +1,20 @@
 package com.example.taskmanager.dialog
 
+import android.content.Context
 import androidx.fragment.app.DialogFragment
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.example.taskmanager.R
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
 //import com.example.taskmanager.dialog.options
 
 abstract class BaseTaskDialog : DialogFragment() {
@@ -48,4 +56,21 @@ abstract class BaseTaskDialog : DialogFragment() {
 
         return adapter
     }
+
+    protected fun extractDate(editText: EditText) : Date?{
+        return try {
+            val dateString: String = editText.text.toString()
+
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            dateFormat.parse(dateString)
+        } catch (e: ParseException) {
+            null
+        }
+    }
+
+    protected fun showToast(context: Context, text: String){
+        val toast: Toast = Toast.makeText(context, text, Toast.LENGTH_SHORT)
+        toast.show()
+    }
+
 }
