@@ -34,7 +34,7 @@ class TaskService : TaskService {
 
                 return p0.dueDate.compareTo(p1.dueDate)
             }
-        }).toMutableList()
+        }).reversed().toMutableList()
     }
 
     // от ChatGPT:

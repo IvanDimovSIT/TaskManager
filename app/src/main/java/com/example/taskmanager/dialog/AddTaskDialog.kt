@@ -32,7 +32,7 @@ class AddTaskDialog(private val observer: AddTaskDialogObserver) :
 
 
     private fun readInput(dialogView: View) : Task?{
-        val title: String = dialogView.findViewById<EditText>(R.id.editTaskTitle).text.toString()
+        val title: String = dialogView.findViewById<EditText>(R.id.editTaskTitle).text.toString().trim()
         if(title.isBlank()){
             showToast(requireContext(), "Въведете заглавие")
             return null
