@@ -91,7 +91,37 @@ class TaskAdapter: RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
         val titleBox = holder.itemView.findViewById<TextView>(R.id.txtTaskTitle)
         titleBox.setText(task.title)
 
+        val checkBox: CheckBox = holder.itemView.findViewById(R.id.chkTaskDone)
+
+        checkBox.setOnCheckedChangeListener(null)
+
+        if(task.isCompleted){
+            titleBox.setTextColor(ContextCompat.getColor(context, R.color.grey))
+            checkBox.isChecked = true
+        }else{
+            titleBox.setTextColor(ContextCompat.getColor(context, R.color.black))
+            checkBox.isChecked = false
+        }
+
+        checkBox.setOnCheckedChangeListener { compoundButton, b ->
+            val position: Int = holder.absoluteAdapterPosition
+            if(position == RecyclerView.NO_POSITION)
+                return@setOnCheckedChangeListener
+
+            val task: Task = displayedTasks[position]
+            val textView:TextView = holder.itemView.findViewById(R.id.txtTaskTitle)
+            if(task.isCompleted){
+                textView.setTextColor(ContextCompat.getColor(context, R.color.black))
+            }else{
+                textView.setTextColor(ContextCompat.getColor(context, R.color.grey))
+            }
+            textView.invalidate()
+            task.isCompleted = !task.isCompleted
+            observer.onUpdated(task)
+        }
+
         holder.itemView.findViewById<TextView>(R.id.txtDate).setText("Срок:"+formatDate(task.dueDate))
+
 
         val priorityText = holder.itemView.findViewById<TextView>(R.id.txtPriority)
         priorityText.setText("Приоритет:"+task.priority.toString())
